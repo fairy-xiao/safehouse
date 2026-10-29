@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F4F7FB">
+<title>安全屋 · 新员工的第一周</title>
+<style>
+  :root{
+    --bg:#F4F7FB; --surface:#FFFFFF; --line:#E6ECF5; --line2:#E1E8F2;
+    --ink:#0E1A2B; --ink2:#33425C; --ink3:#7A889E; --ink4:#93A1B5;
+    --teal:#0FA8A0; --tealD:#0B7F79; --tealBg:#F1FAF9; --tealLine:#CFEDE9;
+    --blue:#2F6FEB; --green:#0F7A3D; --amber:#B4690E; --red:#B42318;
+    --shadow:0 20px 44px -28px rgba(16,32,58,.36), 0 2px 4px rgba(16,32,58,.05);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);color:var(--ink);min-height:100vh;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    -webkit-font-smoothing:antialiased;line-height:1.7;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:linear-gradient(rgba(30,60,110,.045) 1px,transparent 1px),
+                     linear-gradient(90deg,rgba(30,60,110,.045) 1px,transparent 1px);
+    background-size:48px 48px;
+    mask-image:radial-gradient(circle at 50% 28%,#000 30%,transparent 85%);
+    -webkit-mask-image:radial-gradient(circle at 50% 28%,#000 30%,transparent 85%);
+  }
+  body::after{
+    content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;
+    background:radial-gradient(620px 420px at 16% 0%,rgba(15,168,160,.12),transparent 62%),
+               radial-gradient(720px 520px at 94% 100%,rgba(47,111,235,.10),transparent 62%);
+  }
+  .app{position:relative;z-index:1;max-width:820px;margin:0 auto;padding:22px 20px 28px;
+       min-height:100vh;display:flex;flex-direction:column;gap:16px}
+
+  /* ---------- 顶部状态栏 ---------- */
+  .hud{display:flex;align-items:center;gap:18px}
+  .brand{display:flex;align-items:center;gap:8px;font-weight:700;letter-spacing:.04em;font-size:15px;white-space:nowrap;color:var(--ink)}
+  .brand .pulse{width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 0 rgba(15,168,160,.5);animation:pulse 2.4s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(15,168,160,.45)}70%{box-shadow:0 0 0 9px rgba(15,168,160,0)}100%{box-shadow:0 0 0 0 rgba(15,168,160,0)}}
+  .brand em{font-style:normal;font-size:10px;letter-spacing:.18em;color:var(--ink4);font-weight:600}
+  .meter{flex:1;position:relative}
+  .meter-label{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--ink3);margin-bottom:6px}
+  .meter-label b{color:var(--ink);font-size:15px;font-variant-numeric:tabular-nums}
+  .bar{height:7px;border-radius:99px;background:#E6ECF5;overflow:hidden}
+  .bar i{display:block;height:100%;width:50%;border-radius:99px;transition:width .55s cubic-bezier(.22,1,.36,1),background .4s}
+  .flash{position:absolute;right:-2px;top:-9px;font-size:13px;font-weight:800;animation:fly 1s ease forwards;pointer-events:none}
+  @keyframes fly{0%{opacity:0;transform:translateY(8px)}18%{opacity:1}100%{opacity:0;transform:translateY(-18px)}}
+
+  /* ---------- 关卡进度 ---------- */
+  .track{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--ink4)}
+  .track .seg{width:26px;height:5px;border-radius:99px;background:#E3EAF4;transition:.3s}
+  .track .seg.now{background:var(--teal);box-shadow:0 0 0 3px rgba(15,168,160,.15)}
+  .track .seg.past{background:rgba(47,111,235,.28)}
+  .track .seg.past.good{background:#16A34A}
+  .track .seg.past.bad{background:#DC2626}
+  .track .seg.past.warn{background:#D97706}
+  .track .txt{margin-left:6px}
+
+  /* ---------- 卡片 ---------- */
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);border-radius:22px;padding:30px 30px 26px;
+    box-shadow:var(--shadow);
+    animation:rise .45s cubic-bezier(.22,1,.36,1) both;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .place{font-size:12px;color:var(--ink3);letter-spacing:.02em}
+  .pill{font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;letter-spacing:.06em}
+  .pill.good{background:#E9F9EF;color:var(--green);border:1px solid #B7E4C9}
+  .pill.bad{background:#FDECEC;color:var(--red);border:1px solid #F3C6C2}
+  .pill.warn{background:#FEF4E3;color:var(--amber);border:1px solid #F0D9AC}
+  .title{margin:0 0 16px;font-size:25px;line-height:1.4;letter-spacing:-.01em;color:var(--ink)}
+  .card.bad .title{color:var(--red)}
+  .card.good .title{color:var(--green)}
+  .card.warn .title{color:var(--amber)}
+  .body p{margin:0 0 12px;color:var(--ink2);font-size:15.5px;animation:rise .5s cubic-bezier(.22,1,.36,1) both}
+  .body p:last-child{margin-bottom:0}
+  .body strong{color:var(--tealD);font-weight:700}
+  .card.bad .body strong{color:var(--red)}
+
+  /* 知识点 */
+  .tip{margin-top:20px;padding:14px 16px;border-radius:14px;font-size:13.5px;line-height:1.7;
+       background:var(--tealBg);border:1px solid var(--tealLine);color:#3E5A66}
+  .tip b{display:block;color:var(--tealD);font-size:11px;letter-spacing:.14em;margin-bottom:5px}
+
+  /* ---------- 选项 ---------- */
+  .choices{display:flex;flex-direction:column;gap:10px;margin-top:24px}
+  .choice{
+    display:flex;gap:13px;align-items:flex-start;text-align:left;width:100%;
+    background:#FFFFFF;border:1px solid var(--line2);
+    color:#22334A;padding:15px 17px;border-radius:15px;font-size:15px;line-height:1.6;
+    cursor:pointer;font-family:inherit;transition:transform .16s,border-color .16s,background .16s,box-shadow .16s;
+  }
+  .choice:hover:not(:disabled){background:var(--tealBg);border-color:var(--teal);transform:translateY(-1px);
+    box-shadow:0 8px 18px -12px rgba(15,168,160,.5)}
+  .choice:active:not(:disabled){transform:scale(.995)}
+  .choice:disabled{opacity:.45;cursor:default}
+  .choice .k{flex:none;width:22px;height:22px;border-radius:7px;display:grid;place-items:center;
+             font-size:12px;font-weight:700;background:#EDF2F9;color:#5B6B82;margin-top:1px}
+  .choice:hover:not(:disabled) .k{background:rgba(15,168,160,.15);color:var(--tealD)}
+  .choice .t{flex:1}
+  .choice.next{justify-content:center;align-items:center;background:var(--teal);
+               border-color:var(--teal);font-weight:700;color:#fff}
+  .choice.next:hover{background:var(--tealD)}
+  .choice.next .k{background:transparent;width:auto;color:#fff}
+
+  /* ---------- 结局 ---------- */
+  .end{text-align:left}
+  .grade{display:flex;align-items:center;gap:18px;margin-bottom:6px}
+  .grade .badge{width:74px;height:74px;border-radius:20px;display:grid;place-items:center;
+                font-size:34px;font-weight:800;flex:none;background:#fff;
+                border:2px solid var(--c);color:var(--c);
+                box-shadow:0 12px 26px -14px var(--c)}
+  .grade h2{margin:0;font-size:21px;color:var(--ink)}
+  .grade small{display:block;color:var(--ink3);font-size:13px;margin-top:3px;font-weight:400}
+  .final{font-size:13px;color:var(--ink3);margin:14px 0 0}
+  .final b{font-size:26px;color:var(--ink);font-variant-numeric:tabular-nums;margin:0 3px}
+  .verdict{color:var(--ink2);font-size:15px;margin:10px 0 0}
+  .end h3{font-size:12px;letter-spacing:.16em;color:var(--ink4);margin:26px 0 10px;font-weight:700}
+  .review{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+  .review li{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink2)}
+  .review li i{font-style:normal;width:18px;text-align:center}
+  .review .g{color:var(--green)}.review .b{color:var(--red)}.review .w{color:var(--amber)}
+  .leaks{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:8px}
+  .leaks li{font-size:12.5px;padding:5px 11px;border-radius:8px;background:#FDECEC;
+            border:1px solid #F3C6C2;color:var(--red)}
+  .cards{display:grid;gap:10px}
+  .kcard{display:flex;gap:12px;padding:13px 15px;border-radius:13px;background:#F8FAFD;
+         border:1px solid var(--line)}
+  .kcard .ic{font-size:17px;line-height:1.4}
+  .kcard b{display:block;font-size:13.5px;color:var(--ink);margin-bottom:2px}
+  .kcard span{font-size:12.5px;color:var(--ink3);line-height:1.65}
+  .chant{margin-top:22px;padding:15px;border-radius:14px;text-align:center;font-size:13.5px;
+         letter-spacing:.06em;color:var(--tealD);background:var(--tealBg);
+         border:1px dashed #9ADFD8}
+  .end .acts{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+  .end .acts button{flex:1;min-width:130px;padding:13px;border-radius:12px;font-family:inherit;
+                    font-size:14px;font-weight:700;cursor:pointer;transition:.16s}
+  .btn-main{background:var(--teal);color:#fff;border:0}
+  .btn-main:hover{background:var(--tealD)}
+  .btn-ghost{background:#fff;color:#4A5A72;border:1px solid #D8E2EF}
+  .btn-ghost:hover{background:#F4F8FC;border-color:#B9C9DC;color:var(--ink)}
+
+  .foot{margin-top:auto;padding-top:8px;text-align:center;font-size:11.5px;color:var(--ink4)}
+  .foot button{background:none;border:0;color:var(--ink3);font-family:inherit;font-size:11.5px;
+               cursor:pointer;text-decoration:underline;padding:0 4px}
+  .foot button:hover{color:var(--ink)}
+
+  @media (max-width:560px){
+    .app{padding:16px 14px 20px}
+    .card{padding:24px 20px 22px;border-radius:18px}
+    .title{font-size:21px}
+    .body p{font-size:15px}
+    .brand em{display:none}
+    .grade .badge{width:62px;height:62px;font-size:28px;border-radius:16px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hud">
+    <div class="brand"><span class="pulse"></span>安全屋<em>SAFE HOUSE</em></div>
+    <div class="meter">
+      <div class="meter-label"><span>安全分</span><b id="scoreVal">50</b></div>
+      <div class="bar"><i id="scoreBar"></i></div>
+    </div>
+  </header>
+
+  <div class="track" id="track"></div>
+  <main class="stage" id="stage"></main>
+  <footer class="foot">每个选择都会改变结局 · <button id="resetBtn">重新开始</button></footer>
+</div>
+
+<noscript><p style="padding:40px;text-align:center">请启用 JavaScript 后重新打开本页面。</p></noscript>
+
+<script>
+(function () {
+  'use strict';
+
+  /* =====================================================================
+     剧本数据 —— 想改台词、加关卡，改这里就够了
+     ---------------------------------------------------------------------
+     每个场景是一个节点，格式：
+       ch      : 第几关（1-6）
+       place   : 顶部显示的时间地点
+       title   : 标题
+       body    : 正文段落，数组，一个元素一段
+       choices : 选项数组，{t:选项文字, next:跳转的节点, score:扣分(负数), leak:泄露了什么}
+                 正确选项写 score: 0（不扣分），错误选项扣 12-20 分。
+       tip     : 知识点（可以不写）
+       tone    : 结果节点用，可选 good / bad / warn
+       res     : 结果节点用，good / bad / warn，用于最后复盘
+       name    : 结果节点用，复盘里显示的场景名
+       next    : 只有一个「继续」按钮时，点击后去哪
+     正文里可以用 **两个星号** 包裹要加粗的字。
+     ===================================================================== */
+
+  var START_SCORE = 100; // 满分起步，做错才扣分
+
+  var STORY = {
+
+    /* ---------- 序章 ---------- */
+    intro: {
+      ch: 0,
+      place: '周一 09:00 · 星海科技 前台',
+      title: '入职第一天',
+      body: [
+        '你叫林小满，今天是你入职星海科技的第一天。',
+        'HR 在邮件里说：上午先熟悉环境，下午三点到三楼会议室签合同。',
+        '你在工位坐下，电脑还没开机，手机先震了一下。'
+      ],
+      choices: [{ t: '打开手机看看', next: 'mail' }]
+    },
+
+    /* ---------- 第 1 关：钓鱼邮件 ---------- */
+    mail: {
+      ch: 1,
+      place: '周一 09:12 · 公司邮箱',
+      title: '一封「入职材料」邮件',
+      body: [
+        '发件人：HR-人事部 <hr@xinghai-hr-service.com>',
+        '主题：【紧急】请于今日 12:00 前提交入职材料，逾期视为放弃录用',
+        '正文：尊敬的用户，请下载附件《入职材料.zip》，解压密码 123456，填写后回传。感谢配合。',
+        '附件 3MB，你的鼠标停在上面。'
+      ],
+      choices: [
+        { t: '直接解压，赶紧填完省事', next: 'r_mail_bad', score: -16, leak: '电脑被植入远控木马' },
+        { t: '先看发件人域名：公司域名是 xinghai.com，这个多了「-hr-service」', next: 'r_mail_good', score: 0 },
+        { t: '回一封邮件问对方：这是真的吗？', next: 'r_mail_reply', score: -12, leak: '身份证与银行卡信息' }
+      ]
+    },
+    r_mail_bad: {
+      ch: 1, tone: 'bad', res: 'bad', name: '钓鱼邮件',
+      place: '周一 09:20 · 工位',
+      title: '你解压了那个文件',
+      body: [
+        '压缩包里是一个带宏的 Word 文档，你点了「启用编辑」。',
+        '十分钟后电脑开始卡顿——远控木马已经把你的桌面截图和键盘记录发给了攻击者。',
+        '下午真正的 HR 见到你：「入职材料？我没发过这封邮件啊。」'
+      ],
+      tip: '钓鱼邮件三件套：仿冒域名、制造紧迫感、诱导打开附件。带密码的压缩包 + .docm / .exe 附件，是绕过邮件网关的常见手法。',
+      next: 'boss'
+    },
+    r_mail_good: {
+      ch: 1, tone: 'good', res: 'good', name: '钓鱼邮件',
+      place: '周一 09:20 · 工位',
+      title: '你发现了破绽',
+      body: [
+        '你放大了发件人地址：**xinghai-hr-service.com**，而公司真实域名是 **xinghai.com**。',
+        '多出来的「-hr-service」是攻击者抢注的仿冒域名；正文还用了「尊敬的用户」这种群发称呼。',
+        '你把邮件转发给 IT 安全组。五分钟后，全员收到预警：这是一封钓鱼邮件，请勿点击。'
+      ],
+      tip: '核实身份不要用对方提供的渠道：邮件里的电话、邮件里的链接，都可能指向骗子。正确做法是走公司内网、通讯录或当面确认。',
+      next: 'boss'
+    },
+    r_mail_reply: {
+      ch: 1, tone: 'bad', res: 'bad', name: '钓鱼邮件',
+      place: '周一 09:26 · 工位',
+      title: '「核实」本身就是陷阱',
+      body: [
+        '对方很快回复：「是的，请把身份证正反面和银行卡号发我，我帮你加急录入。」',
+        '你照做了。第二天，你接到一个能准确报出你全部信息的「银行客服」电话——你的资料已经被转卖。'
+      ],
+      tip: '骗子最爱「核实」这一步。你以为在验证对方，其实是在把信息主动交出去。',
+      next: 'boss'
+    },
+
+    /* ---------- 第 2 关：冒充领导 ---------- */
+    boss: {
+      ch: 2,
+      place: '周一 14:30 · 微信',
+      title: '「张总」的转账请求',
+      body: [
+        '一个头像和昵称都是「张总」的人加了你微信，验证消息写着「小满，加一下」。',
+        '通过后对方立刻发来消息：',
+        '「我在外地开会不方便接电话。有个供应商的款要先垫 2 万，明天财务就还你。卡号发你了，**别声张**。」',
+        '你翻了翻手机通讯录——张总的号码你其实存过。'
+      ],
+      choices: [
+        { t: '领导开口了，先转过去再说', next: 'r_boss_bad', score: -20, leak: '2 万元转账' },
+        { t: '打通讯录里存的号码，核实一下', next: 'r_boss_good', score: 0 },
+        { t: '在微信里问他一句：您真是张总吗？', next: 'boss_pressure' }
+      ]
+    },
+    boss_pressure: {
+      ch: 2,
+      place: '周一 14:36 · 微信',
+      title: '对方开始催了',
+      body: [
+        '对方秒回：「当然是我，头像都是我本人。快点，供应商在催，**别耽误事**。」',
+        '紧接着发来一张转账截图：「我已经转给你了，银行延迟到账，你先垫一下。」',
+        '语气越来越急，还连发了三个问号。'
+      ],
+      choices: [
+        { t: '都有截图了，应该没问题，转', next: 'r_boss_bad2', score: -20, leak: '2 万元转账' },
+        { t: '截图也能 P，还是打电话核实', next: 'r_boss_good2', score: -5 }
+      ]
+    },
+    r_boss_bad: {
+      ch: 2, tone: 'bad', res: 'bad', name: '冒充领导',
+      place: '周一 14:40 · 微信',
+      title: '对方收钱后消失了',
+      body: [
+        '你转了 2 万。对方回了个「收到，明天还你」，然后头像变灰。',
+        '第二天打开微信，那个号变成红色感叹号——账号已注销。',
+        '真正的张总说：我从来没加过你微信。'
+      ],
+      tip: '冒充领导诈骗的核心是「权威 + 紧迫 + 保密」：不让你打电话、不让你声张、不给你思考时间。凡是要转账，必须换一个渠道核实。',
+      next: 'wifi'
+    },
+    r_boss_bad2: {
+      ch: 2, tone: 'bad', res: 'bad', name: '冒充领导',
+      place: '周一 14:44 · 微信',
+      title: '截图是假的',
+      body: [
+        '那张「转账截图」是用生成器做的，两分钟就能 P 一张。',
+        '你转过去的 2 万，十分钟内被拆分到四个账户，再也追不回来。'
+      ],
+      tip: '截图、到账短信、语音条都可以伪造。唯一可靠的验证是：用你自己掌握的、独立于对方提供的联系方式去确认。',
+      next: 'wifi'
+    },
+    r_boss_good: {
+      ch: 2, tone: 'good', res: 'good', name: '冒充领导',
+      place: '周一 14:38 · 工位',
+      title: '一个电话拆穿了骗局',
+      body: [
+        '电话接通，张总一头雾水：「我没让你转账，那是骗子。」',
+        '你把聊天记录截图发给了行政和财务。当天下午，公司发了全员反诈提醒，你的案例被做成了培训素材。'
+      ],
+      tip: '「换渠道核实」是反诈的核心动作：微信说的用电话核实，电话说的当面核实。骗子能仿冒头像和昵称，仿冒不了你通讯录里的号码。',
+      next: 'wifi'
+    },
+    r_boss_good2: {
+      ch: 2, tone: 'good', res: 'good', name: '冒充领导',
+      place: '周一 14:46 · 工位',
+      title: '你没被催乱',
+      body: [
+        '你拨通通讯录里的号码，张总说他在开会，从没让你转过账。',
+        '你顺手举报了那个微信号，系统提示：该账号已被 3 人标记为诈骗。'
+      ],
+      tip: '「催」是骗子最常用的武器。越急的事，越要慢一步核实——真正的急事，经得起一个电话。',
+      next: 'wifi'
+    },
+
+    /* ---------- 第 3 关：公共 WiFi ---------- */
+    wifi: {
+      ch: 3,
+      place: '周一 19:40 · 楼下咖啡馆',
+      title: '三个同名 WiFi',
+      body: [
+        '加班到晚上，你抱着电脑到楼下咖啡馆改方案。手机热点只剩 200MB，而你要登录公司 VPN 拉一份 300MB 的素材。',
+        'WiFi 列表里躺着三个很像的名字：',
+        '· **Cafe_Free_WiFi**　需要密码，店员说是店里官方网络',
+        '· **Cafe_Free_WiFi_5G**　不需要密码，信号满格',
+        '· **Free-WiFi**　不需要密码，信号只有一格'
+      ],
+      choices: [
+        { t: '连不要密码的 Cafe_Free_WiFi_5G，省事', next: 'r_wifi_bad', score: -15, leak: '公司邮箱与密码' },
+        { t: '问店员确认官方网络和密码，连上后再开 VPN', next: 'r_wifi_ok', score: -4 },
+        { t: '开手机热点，慢慢下', next: 'r_wifi_good', score: 0 }
+      ]
+    },
+    r_wifi_bad: {
+      ch: 3, tone: 'bad', res: 'bad', name: '公共 WiFi',
+      place: '周一 19:52 · 咖啡馆',
+      title: '那个「认证页面」是假的',
+      body: [
+        '连上后浏览器弹出一个「WiFi 认证」页面，要求输入公司邮箱和密码才能上网。你输了。',
+        '这是攻击者架设的**同名钓鱼热点**。30 秒后，你的账号密码出现在一个公开的泄露库里。',
+        '第二天 IT 找上门：有人用你的账号从境外登录了内网。'
+      ],
+      tip: '公共 WiFi 的三种风险：同名热点、DNS 劫持、流量嗅探。不要在公共网络下登录敏感系统；必须用时，先连 VPN 再操作。',
+      next: 'code'
+    },
+    r_wifi_ok: {
+      ch: 3, tone: 'good', res: 'good', name: '公共 WiFi',
+      place: '周一 19:50 · 咖啡馆',
+      title: '稳妥的做法',
+      body: [
+        '店员帮你确认了官方网络名称和密码。你连上后先开了公司 VPN，再登录系统——流量全程加密。',
+        '慢了那么一点，但账号安然无恙。'
+      ],
+      tip: 'VPN 的作用是在不可信网络上建立加密隧道。即便连到了假热点，攻击者看到的也只是加密流量。',
+      next: 'code'
+    },
+    r_wifi_good: {
+      ch: 3, tone: 'good', res: 'good', name: '公共 WiFi',
+      place: '周一 20:05 · 咖啡馆',
+      title: '流量是自己的最安全',
+      body: [
+        '你开了手机热点，一边等进度条一边喝完了那杯拿铁。',
+        '第二天同事说：那家店上周刚有顾客连了假 WiFi，网银被盗刷。'
+      ],
+      tip: '用自己的流量是最省心的方案。流量不够时，把敏感操作留到安全网络下，先做不需要登录账号的事。',
+      next: 'code'
+    },
+
+    /* ---------- 第 4 关：验证码 ---------- */
+    code: {
+      ch: 4,
+      place: '周二 20:15 · 出租屋',
+      title: '一个「客服」电话',
+      body: [
+        '手机响了，对方自称是某电商平台客服：',
+        '「您 10 月 18 日买的耳机，快递在途中丢了，我们给您**双倍理赔**。麻烦提供一下刚收到的短信验证码，我这边帮您操作退款。」',
+        '对方准确报出了你的订单号、收货地址和手机号。而你的手机，确实刚收到一条验证码短信。'
+      ],
+      choices: [
+        { t: '报验证码，双倍理赔挺划算', next: 'r_code_bad', score: -20, leak: '银行卡被盗刷 4800 元' },
+        { t: '按他说的下载「理赔 APP」并共享屏幕', next: 'r_code_screen', score: -20, leak: '银行卡号、密码与通讯录' },
+        { t: '挂掉，自己打开官方 APP 查这笔订单', next: 'r_code_good', score: 0 }
+      ]
+    },
+    r_code_bad: {
+      ch: 4, tone: 'bad', res: 'bad', name: '验证码诈骗',
+      place: '周二 20:19 · 出租屋',
+      title: '那是支付验证码',
+      body: [
+        '那条验证码不是「理赔确认」，而是**银行转账的支付验证码**。',
+        '三分钟后，你的卡被转走 4800 元。再打回去，号码已停机。'
+      ],
+      tip: '验证码 = 你账户的最后一道锁。任何人在电话里索要验证码，无论理由多合理，都是诈骗。平台客服永远不会问你要验证码。',
+      next: 'pwd'
+    },
+    r_code_screen: {
+      ch: 4, tone: 'bad', res: 'bad', name: '验证码诈骗',
+      place: '周二 20:31 · 出租屋',
+      title: '屏幕共享 = 把手机交给陌生人',
+      body: [
+        '屏幕共享一开，你输入的银行卡号、密码、验证码全被对方看得一清二楚。',
+        '对方还「指导」你装了一个来路不明的 APP——那是个木马，能读取你的全部短信。'
+      ],
+      tip: '屏幕共享等于把手机交到对方手里。同理，陌生人让你下载「会议软件」「理赔 APP」「安全插件」，一律拒绝。',
+      next: 'pwd'
+    },
+    r_code_good: {
+      ch: 4, tone: 'good', res: 'good', name: '验证码诈骗',
+      place: '周二 20:16 · 出租屋',
+      title: '你自己去查了',
+      body: [
+        '你挂断电话，打开官方 APP：订单显示「已签收」，物流一切正常。',
+        '你在 APP 内举报了那个号码。客服回复：这是典型的「理赔诈骗」，他们掌握你的订单信息，往往是因为你在别处填过资料。'
+      ],
+      tip: '骗子能报出你的订单，不代表他是官方。判断真伪要看「谁在主动联系你、要你做什么」，而不是他知道多少。',
+      next: 'pwd'
+    },
+
+    /* ---------- 第 5 关：密码 ---------- */
+    pwd: {
+      ch: 5,
+      place: '周三 10:00 · 公司内网',
+      title: '设置密码',
+      body: [
+        '公司账号开通了，系统要求你设置新密码。',
+        '你想起那套用了八年的老密码：**linxiaoman0315**——姓名拼音加生日，好记，而且几乎所有网站都用它。'
+      ],
+      choices: [
+        { t: '继续用老密码，好记', next: 'r_pwd_bad', score: -14, leak: '账号撞库风险' },
+        { t: '用 Xh@2024 这种「公司名 + 年份」，看着专业', next: 'r_pwd_warn', score: -7 },
+        { t: '用密码管理器生成 20 位随机密码，并开启二次验证', next: 'r_pwd_good', score: 0 }
+      ]
+    },
+    r_pwd_bad: {
+      ch: 5, tone: 'bad', res: 'bad', name: '密码管理',
+      place: '三个月后 · 公司内网',
+      title: '一处泄露，处处沦陷',
+      body: [
+        '某购物网站数据泄露，你的邮箱和这套密码被公开。',
+        '攻击者拿它去试你的公司邮箱、网盘、支付账号——全部成功。这在黑产里叫**撞库**。'
+      ],
+      tip: '密码复用的本质是：把你所有账号的安全等级，降到最弱的那个网站。',
+      next: 'usb'
+    },
+    r_pwd_warn: {
+      ch: 5, tone: 'warn', res: 'warn', name: '密码管理',
+      place: '周三 10:06 · 公司内网',
+      title: '看起来复杂，其实很好猜',
+      body: [
+        'Xh@2024 通过了强度检测，但它仍然是「公司名 + 年份」的常见组合，在攻击字典里排前一百名。',
+        '你比昨天安全了一点，但还不够。'
+      ],
+      tip: '看起来复杂不等于安全。攻击者用的是字典：常见单词、姓名拼音、生日、公司名、年份，以及 @ 和 ! 的固定位置。',
+      next: 'usb'
+    },
+    r_pwd_good: {
+      ch: 5, tone: 'good', res: 'good', name: '密码管理',
+      place: '周三 10:05 · 公司内网',
+      title: '你把这道题做对了',
+      body: [
+        '密码管理器生成了一个 20 位的随机密码，你根本不用记——只需要记住一个主密码。',
+        '再加上二次验证，即使密码泄露，攻击者也进不来。'
+      ],
+      tip: '三个动作让账号安全提升一个量级：一账号一密码、用密码管理器、开启二次验证（验证器 APP 或硬件密钥优先，短信次之）。',
+      next: 'usb'
+    },
+
+    /* ---------- 第 6 关：U 盘 ---------- */
+    usb: {
+      ch: 6,
+      place: '周四 18:20 · 地下停车场',
+      title: '一个 U 盘',
+      body: [
+        '你在停车场捡到一个 U 盘，外壳上贴着标签：**「2024 年 12 月工资表（勿外传）」**。',
+        '四下无人。你的电脑就在包里。'
+      ],
+      choices: [
+        { t: '插自己电脑看看是谁的，好还给人家', next: 'r_usb_bad', score: -15, leak: '电脑被植入后门' },
+        { t: '交给行政或 IT，让他们处理', next: 'r_usb_good', score: 0 },
+        { t: '插公司电脑，但只看一眼、不打开文件', next: 'r_usb_warn', score: -8, leak: '公司内网暴露风险' }
+      ]
+    },
+    r_usb_bad: {
+      ch: 6, tone: 'bad', res: 'bad', name: '可疑 U 盘',
+      place: '周四 18:26 · 工位',
+      title: '接口就是入口',
+      body: [
+        'U 盘里只有一个「工资表.xlsx」。你双击的瞬间，一个伪装成表格的脚本开始运行。',
+        '这叫 **BadUSB**：U 盘被改写成「一插上就自动敲键盘」的设备。你的电脑成了攻击者进入公司内网的第一跳板。'
+      ],
+      tip: '捡到的 U 盘、来路不明的充电线、公共电脑上的 USB 口，都可能被改造成攻击工具。',
+      next: 'end'
+    },
+    r_usb_good: {
+      ch: 6, tone: 'good', res: 'good', name: '可疑 U 盘',
+      place: '周四 18:30 · IT 安全组',
+      title: '你交给了专业的人',
+      body: [
+        '你把 U 盘交给了 IT。安全组一检测：里面是一个会自动运行木马的 BadUSB，标签是故意贴的诱饵，专门放在公司楼下。',
+        '你被写进了当月的「安全之星」提名。'
+      ],
+      tip: '「好奇」是社会工程最常用的钩子：工资表、中奖名单、离职名单……标签上的字，就是为了让你插上去。',
+      next: 'end'
+    },
+    r_usb_warn: {
+      ch: 6, tone: 'warn', res: 'warn', name: '可疑 U 盘',
+      place: '周四 18:27 · 工位',
+      title: '「只看一眼」不成立',
+      body: [
+        '你没打开任何文件，但 U 盘插入的瞬间，autorun 脚本已经执行了。',
+        '感染的入口是接口，不是文件。'
+      ],
+      tip: '正确流程：不插自己的设备 → 交给 IT / 安全部门 → 由专用隔离环境检测。',
+      next: 'end'
+    },
+
+    end: { ending: true, ch: 6 }
+  };
+
+  /* ---------- 结局页的知识卡片 ---------- */
+  var CARDS = [
+    { ic: '✉️', t: '钓鱼邮件', d: '看域名、看称呼、看紧迫感。带密码的压缩包和宏文档，是绕过邮件网关的惯用手法。' },
+    { ic: '💬', t: '冒充领导', d: '转账必须换渠道核实。头像、昵称、截图、语音都能伪造，通讯录里的号码不能。' },
+    { ic: '📶', t: '公共 WiFi', d: '同名热点可能是钓鱼热点。敏感操作先连 VPN，或者干脆用手机热点。' },
+    { ic: '🔢', t: '验证码', d: '验证码是账户最后一道锁，任何人索要都是骗子。屏幕共享等于把手机交出去。' },
+    { ic: '🔑', t: '密码管理', d: '一码多用，一处泄露处处沦陷。一账号一密码 + 密码管理器 + 二次验证。' },
+    { ic: '💾', t: '可疑设备', d: '接口即入口。捡到的 U 盘不要插，交给 IT 用隔离环境检测。' }
+  ];
+
+  /* ===================== 以下一般不需要改 ===================== */
+
+  var stage = document.getElementById('stage');
+  var scoreVal = document.getElementById('scoreVal');
+  var scoreBar = document.getElementById('scoreBar');
+  var track = document.getElementById('track');
+  var meter = document.querySelector('.meter');
+  var S = null;
+
+  function reset() {
+    S = { score: START_SCORE, leaks: [], log: [], ch: 0 };
+    scoreVal.textContent = S.score;
+    paintBar();
+    go('intro');
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function fmt(s) {
+    return esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  }
+
+  function paintBar() {
+    var s = S.score;
+    scoreBar.style.width = Math.max(2, s) + '%';
+    scoreBar.style.background = s >= 75
+      ? 'linear-gradient(90deg,#0FA8A0,#2F6FEB)'
+      : s >= 55
+        ? 'linear-gradient(90deg,#F2B01E,#E08A00)'
+        : 'linear-gradient(90deg,#E4574C,#B42318)';
+  }
+
+  function flash(delta) {
+    if (!delta) return;
+    var el = document.createElement('span');
+    el.className = 'flash';
+    el.textContent = (delta > 0 ? '+' : '') + delta;
+    el.style.color = delta > 0 ? '#0F7A3D' : '#B42318';
+    meter.appendChild(el);
+    setTimeout(function () { el.remove(); }, 1000);
+  }
+
+  function choose(i) {
+    var node = STORY[S.node];
+    if (!node || !node.choices) return;
+    var c = node.choices[i];
+    if (!c) return;
+
+    if (c.score) {
+      S.score = Math.max(0, Math.min(100, S.score + c.score));
+      scoreVal.textContent = S.score;
+      paintBar();
+      flash(c.score);
+    }
+    if (c.leak) S.leaks.push(c.leak);
+
+    document.querySelectorAll('.choice').forEach(function (b) { b.disabled = true; });
+    setTimeout(function () { go(c.next); }, c.score ? 180 : 0);
+  }
+
+  function renderTrack() {
+    var names = ['邮件', '转账', 'WiFi', '来电', '密码', 'U盘'];
+    var html = '';
+    for (var i = 0; i < 6; i++) {
+      var cls = 'seg';
+      if (S.log[i]) cls += ' past ' + S.log[i].res;
+      if (S.ch === i + 1) cls += ' now';
+      html += '<span class="' + cls + '" title="' + names[i] + '"></span>';
+    }
+    var label = S.ch <= 0 ? '准备中' : (S.ch >= 6 ? '本周结束' : '场景 ' + S.ch + ' / 6');
+    html += '<span class="txt">' + label + '</span>';
+    track.innerHTML = html;
+  }
+
+  function go(id) {
+    var n = STORY[id];
+    if (!n) { console.error('找不到节点：' + id); return; }
+    S.node = id;
+    if (n.ch > S.ch) S.ch = n.ch;
+    if (n.res) S.log[n.ch - 1] = { res: n.res, name: n.name };
+    renderTrack();
+    if (n.ending) { renderEnding(); return; }
+    renderScene(n);
+  }
+
+  var TONE_TEXT = { good: '✓ 处理正确', bad: '✕ 中招了', warn: '! 差一点' };
+
+  function renderScene(n) {
+    var html = '<section class="card ' + (n.tone || '') + '">';
+    html += '<div class="meta"><span class="place">' + esc(n.place) + '</span>';
+    if (n.res) html += '<span class="pill ' + n.res + '">' + TONE_TEXT[n.res] + '</span>';
+    html += '</div>';
+    html += '<h1 class="title">' + fmt(n.title) + '</h1>';
+    html += '<div class="body">';
+    n.body.forEach(function (p, i) {
+      html += '<p style="animation-delay:' + (i * 70) + 'ms">' + fmt(p) + '</p>';
+    });
+    html += '</div>';
+
+    if (n.tip) {
+      html += '<div class="tip"><b>知识点</b>' + fmt(n.tip) + '</div>';
+    }
+
+    html += '<div class="choices">';
+    if (n.choices) {
+      n.choices.forEach(function (c, i) {
+        html += '<button class="choice" data-i="' + i + '">' +
+                '<span class="k">' + (i + 1) + '</span>' +
+                '<span class="t">' + fmt(c.t) + '</span></button>';
+      });
+    } else {
+      html += '<button class="choice next" id="nextBtn"><span class="t">继续</span>' +
+              '<span class="k">→</span></button>';
+    }
+    html += '</div></section>';
+
+    stage.innerHTML = html;
+
+    stage.querySelectorAll('.choice[data-i]').forEach(function (btn) {
+      btn.addEventListener('click', function () { choose(Number(btn.dataset.i)); });
+    });
+    var nb = document.getElementById('nextBtn');
+    if (nb) nb.addEventListener('click', function () { go(n.next); });
+  }
+
+  function gradeOf(s) {
+    if (s >= 90) return { k: 'S', name: '安全标兵', c: '#0F7A3D', line: '这一周，你几乎没有给攻击者留下任何机会。' };
+    if (s >= 75) return { k: 'A', name: '老练打工人', c: '#0B7F79', line: '大部分陷阱你都识破了，个别环节还能再稳一点。' };
+    if (s >= 55) return { k: 'B', name: '惊险过关', c: '#B4690E', line: '你踩了几个坑，好在还来得及补。' };
+    return { k: 'C', name: '年度最佳受害者', c: '#B42318', line: '这一周，攻击者在你身上完成了 KPI。' };
+  }
+
+  function renderEnding() {
+    S.ch = 6;
+    renderTrack();
+    var g = gradeOf(S.score);
+    var total = S.log.filter(function (x) { return x && x.res === 'good'; }).length;
+
+    var html = '<section class="card end">';
+    html += '<div class="grade"><div class="badge" style="--c:' + g.c + '">' + g.k + '</div>' +
+            '<h2>' + g.name + '<small>' + (S.ch >= 6 ? '六关全部完成' : '') + '</small></h2></div>';
+    html += '<p class="final">最终安全分<b>' + S.score + '</b>/ 100</p>';
+    html += '<p class="verdict">' + g.line + '　你在 ' + total + ' / 6 个场景里做出了正确判断。</p>';
+
+    html += '<h3>本周复盘</h3><ul class="review">';
+    for (var i = 0; i < 6; i++) {
+      var r = S.log[i];
+      var ic = !r ? '–' : r.res === 'good' ? '✓' : r.res === 'warn' ? '!' : '✕';
+      var cl = !r ? '' : r.res === 'good' ? 'g' : r.res === 'warn' ? 'w' : 'b';
+      var nm = ['钓鱼邮件', '冒充领导', '公共 WiFi', '验证码诈骗', '密码管理', '可疑 U 盘'][i];
+      var tx = !r ? '未经历' : r.res === 'good' ? '识破' : r.res === 'warn' ? '险过' : '中招';
+      html += '<li><i class="' + cl + '">' + ic + '</i>' + nm + '　<span style="color:#7A889E">' + tx + '</span></li>';
+    }
+    html += '</ul>';
+
+    html += '<h3>泄露清单</h3>';
+    if (S.leaks.length === 0) {
+      html += '<p style="font-size:13.5px;color:#0F7A3D;margin:0">什么也没丢。这就是最好的结果。</p>';
+    } else {
+      html += '<ul class="leaks">';
+      S.leaks.forEach(function (x) { html += '<li>' + esc(x) + '</li>'; });
+      html += '</ul>';
+    }
+
+    html += '<h3>六个必须记住的知识点</h3><div class="cards">';
+    CARDS.forEach(function (c) {
+      html += '<div class="kcard"><span class="ic">' + c.ic + '</span><div><b>' + c.t + '</b><span>' + c.d + '</span></div></div>';
+    });
+    html += '</div>';
+
+    html += '<div class="chant">链接不轻点 · 转账先核实 · 验证码不给 · 密码不重复 · U 盘不乱插 · WiFi 不轻连</div>';
+    html += '<div class="acts"><button class="btn-main" id="again">再玩一次</button>' +
+            '<button class="btn-ghost" id="shareBtn">复制我的成绩</button></div>';
+    html += '</section>';
+
+    stage.innerHTML = html;
+
+    document.getElementById('again').addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      reset();
+    });
+    document.getElementById('shareBtn').addEventListener('click', function () {
+      var txt = '我在《安全屋 · 新员工的第一周》拿到 ' + g.k + ' 级（' + S.score + ' 分），' +
+                '踩了 ' + S.leaks.length + ' 个坑。你能拿几分？';
+      navigator.clipboard && navigator.clipboard.writeText(txt).then(function () {
+        document.getElementById('shareBtn').textContent = '已复制 ✓';
+      }).catch(function () {
+        document.getElementById('shareBtn').textContent = txt;
+      });
+    });
+
+    try {
+      var best = Number(localStorage.getItem('safehouse_best') || 0);
+      if (S.score > best) localStorage.setItem('safehouse_best', String(S.score));
+    } catch (e) { /* 本地文件模式下可能不可用，忽略 */ }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* 键盘：1-4 选择，回车继续 */
+  document.addEventListener('keydown', function (e) {
+    if (e.key >= '1' && e.key <= '4') {
+      var btn = document.querySelector('.choice[data-i="' + (Number(e.key) - 1) + '"]');
+      if (btn) btn.click();
+    }
+    if (e.key === 'Enter') {
+      var nb = document.getElementById('nextBtn');
+      if (nb) nb.click();
+    }
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', reset);
+
+  reset();
+})();
+</script>
+</body>
+</html>
