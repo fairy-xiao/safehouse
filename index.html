@@ -59,6 +59,23 @@
   .track .seg.past.bad{background:#DC2626}
   .track .seg.past.warn{background:#D97706}
   .track .txt{margin-left:6px}
+  .leak-chip{display:none;margin-left:auto;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;
+             background:#FDECEC;border:1px solid #F3C6C2;color:var(--red);white-space:nowrap;
+             align-items:center;gap:4px}
+  .leak-chip.on{display:inline-flex}
+  .leak-chip.bump{animation:bump .5s ease}
+  @keyframes bump{0%{transform:scale(1)}30%{transform:scale(1.22)}100%{transform:scale(1)}}
+
+  /* ---------- 倒计时 ---------- */
+  .timer{margin-top:20px}
+  .timer-head{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--ink3);margin-bottom:7px}
+  .timer-head b{color:var(--ink2);font-variant-numeric:tabular-nums;font-size:12px}
+  .timer-bar{height:8px;border-radius:99px;background:#EEF2F8;overflow:hidden;border:1px solid var(--line)}
+  .timer-bar i{display:block;height:100%;width:100%;border-radius:99px;
+               background:linear-gradient(90deg,#0FA8A0,#2F6FEB);transition:width 1s linear,background .3s}
+  .timer.urgent .timer-head b{color:var(--red);font-weight:700}
+  .timer.urgent .timer-bar{background:#FDECEC;border-color:#F3C6C2}
+  .timer.urgent .timer-bar i{background:linear-gradient(90deg,#E4574C,#B42318)}
 
   /* ---------- 卡片 ---------- */
   .card{
@@ -68,6 +85,10 @@
     animation:rise .45s cubic-bezier(.22,1,.36,1) both;
   }
   @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  /* ---------- 场景配图 ---------- */
+  .fig{margin:-30px -30px 22px;border-radius:21px 21px 0 0;overflow:hidden;background:#EEF3F8;line-height:0;aspect-ratio:16 / 9}
+  .fig img{display:block;width:100%;height:100%;object-fit:cover}
+
   .meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
   .place{font-size:12px;color:var(--ink3);letter-spacing:.02em}
   .pill{font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;letter-spacing:.06em}
@@ -147,13 +168,103 @@
   .btn-ghost:hover{background:#F4F8FC;border-color:#B9C9DC;color:var(--ink)}
 
   .foot{margin-top:auto;padding-top:8px;text-align:center;font-size:11.5px;color:var(--ink4)}
+  .foot-names{font-size:12px;color:var(--ink3);letter-spacing:.05em;margin-bottom:3px}
+
+  /* ---------- 关于本作 ---------- */
+  .modal{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:20px}
+  .modal[hidden]{display:none}
+  .modal-mask{position:absolute;inset:0;background:rgba(14,26,43,.45)}
+  .modal-card{position:relative;background:#fff;border-radius:18px;width:100%;max-width:470px;
+              max-height:86vh;overflow:auto;padding:26px 24px 22px;
+              box-shadow:0 30px 60px -20px rgba(16,32,58,.5);animation:rise .26s cubic-bezier(.22,1,.36,1) both}
+  .modal-x{position:absolute;right:12px;top:10px;border:0;background:none;font-size:24px;line-height:1;
+           color:var(--ink4);cursor:pointer;padding:4px 8px}
+  .modal-x:hover{color:var(--ink)}
+  .modal-card h3{margin:0 0 4px;font-size:18px;color:var(--ink)}
+  .about-name{margin:0 0 16px;font-size:14px;font-weight:700;color:var(--tealD)}
+  .modal-card dl{margin:0;display:grid;grid-template-columns:66px 1fr;gap:9px 14px;font-size:13px;line-height:1.7}
+  .modal-card dt{color:var(--ink4)}
+  .modal-card dd{margin:0;color:var(--ink2)}
+  .about-foot{margin:16px 0 0;padding-top:12px;border-top:1px dashed var(--line);font-size:12px;color:var(--ink4)}
   .foot button{background:none;border:0;color:var(--ink3);font-family:inherit;font-size:11.5px;
                cursor:pointer;text-decoration:underline;padding:0 4px}
   .foot button:hover{color:var(--ink)}
 
+  /* ---------- 开场页 ---------- */
+  .landing{text-align:left}
+  .landing .kicker{font-size:12px;letter-spacing:.18em;color:var(--tealD);font-weight:700}
+  .landing .hero-title{margin:14px 0 0;font-size:58px;letter-spacing:-.02em;color:var(--ink);line-height:1.1}
+  .landing .hero-sub{margin-top:8px;font-size:19px;color:var(--ink2)}
+  .landing .lead{margin:24px 0 0;font-size:15.5px;color:var(--ink2);line-height:1.95;max-width:640px}
+  .landing .how{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:26px}
+  .landing .how-item{background:#F8FAFD;border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  .landing .how-item b{display:block;font-size:14px;color:var(--ink);margin-bottom:4px}
+  .landing .how-item span{font-size:12px;color:var(--ink3);line-height:1.65}
+  .landing .start{margin-top:26px;width:100%;padding:16px;border:0;border-radius:14px;background:var(--teal);
+                  color:#fff;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;
+                  transition:transform .16s,background .16s;box-shadow:0 14px 28px -16px rgba(15,168,160,.85)}
+  .landing .start:hover{background:var(--tealD);transform:translateY(-1px)}
+  .landing .hint{margin-top:12px;text-align:center;font-size:11.5px;color:var(--ink4)}
+  .landing .credits{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);
+                    display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .landing .credits b{font-size:13px;color:var(--ink2);letter-spacing:.02em}
+  .landing .credits span{font-size:11.5px;color:var(--ink4)}
+
+  /* ---------- 尾声 ---------- */
+  .chain-lead{font-size:13.5px;color:var(--ink3);margin:-2px 0 12px}
+  .know{margin-top:6px}
+  .know summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+                padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#F8FAFD;
+                font-size:13px;color:var(--ink2);font-weight:700}
+  .know summary::-webkit-details-marker{display:none}
+  .know summary span{font-size:11.5px;color:var(--ink4);font-weight:400}
+  .know summary span::after{content:"展开"}
+  .know[open] summary span::after{content:"收起"}
+  .know .cards{margin-top:10px}
+  .fixlist{display:grid;gap:8px}
+  .fix{padding:12px 14px;border-radius:12px;background:#F8FAFD;border:1px solid var(--line)}
+  .fix b{display:block;font-size:13px;color:var(--ink);margin-bottom:4px}
+  .fix p{margin:0;font-size:13px;color:var(--ink2);line-height:1.75}
+  .replay-tip{margin:14px 0 0;text-align:center;font-size:12px;color:var(--ink4)}
+  .chain{display:flex;align-items:center;overflow-x:auto;padding:2px 0 10px}
+  .node{flex:none;width:86px;border-radius:13px;border:1px solid var(--line);background:#F8FAFD;
+        padding:10px 8px;text-align:center}
+  .node .n{display:block;font-size:10px;letter-spacing:.12em;color:var(--ink4);font-variant-numeric:tabular-nums}
+  .node b{display:block;font-size:12px;color:var(--ink);margin:4px 0 2px;line-height:1.3;font-weight:700}
+  .node i{font-style:normal;font-size:11px;color:var(--ink3)}
+  .node.good{border-color:#B7E4C9;background:#EDFAF2}
+  .node.good .n,.node.good i{color:#0F7A3D}
+  .node.bad{border-color:#F3C6C2;background:#FDECEC}
+  .node.bad .n,.node.bad i{color:#B42318}
+  .node.warn{border-color:#F0D9AC;background:#FEF4E3}
+  .node.warn .n,.node.warn i{color:#B4690E}
+  .node.none{opacity:.5}
+  .node.end{border-width:2px;width:96px}
+  .link{flex:none;width:16px;height:2px;background:#D5DFEC;position:relative}
+  .link::after{content:"";position:absolute;right:-1px;top:-4px;border-left:7px solid #D5DFEC;
+               border-top:5px solid transparent;border-bottom:5px solid transparent}
+  .review .step{font-style:normal;width:22px;color:var(--ink4);font-size:12px;font-variant-numeric:tabular-nums}
+  .epilogue{background:#F8FAFD;border:1px solid var(--line);border-radius:16px;padding:18px 20px}
+  .epilogue p{margin:0 0 10px;font-size:14.5px;color:var(--ink2);line-height:1.85}
+  .epilogue p:last-child{margin-bottom:0}
+  .epilogue .quote{font-size:15px;color:var(--tealD);font-weight:600;border-left:3px solid var(--teal);padding-left:12px}
+  .epilogue .closing{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);color:var(--ink);font-size:14.5px}
+
   @media (max-width:560px){
     .app{padding:16px 14px 20px}
+    .landing .hero-title{font-size:40px}
+    .landing .how{grid-template-columns:1fr}
+    .chain{flex-direction:column;align-items:stretch;overflow:visible}
+    .node{width:100%;text-align:left;display:flex;align-items:center;gap:10px;padding:10px 12px}
+    .node .n{width:24px;flex:none}
+    .node b{margin:0;flex:1}
+    .node i{flex:none}
+    .node.end{width:100%}
+    .link{width:2px;height:14px;margin-left:24px}
+    .link::after{right:auto;left:-4px;top:auto;bottom:-1px;border-left:5px solid transparent;
+                 border-right:5px solid transparent;border-top:7px solid #D5DFEC;border-bottom:0}
     .card{padding:24px 20px 22px;border-radius:18px}
+    .fig{margin:-24px -20px 18px;border-radius:17px 17px 0 0}
     .title{font-size:21px}
     .body p{font-size:15px}
     .brand em{display:none}
@@ -169,17 +280,62 @@
   <header class="hud">
     <div class="brand"><span class="pulse"></span>安全屋<em>SAFE HOUSE</em></div>
     <div class="meter">
-      <div class="meter-label"><span>安全分</span><b id="scoreVal">50</b></div>
+      <div class="meter-label"><span>安全分</span><b id="scoreVal">100</b></div>
       <div class="bar"><i id="scoreBar"></i></div>
     </div>
   </header>
 
   <div class="track" id="track"></div>
-  <main class="stage" id="stage"></main>
-  <footer class="foot">每个选择都会改变结局 · <button id="resetBtn">重新开始</button></footer>
+
+  <main class="stage" id="stage">
+    <!-- 这段是「没有执行 JS」时的兜底内容，正常打开时会被游戏界面替换掉 -->
+    <section class="card">
+      <div class="meta"><span class="place">打开方式提示</span></div>
+      <h1 class="title">这个页面需要 JavaScript 才能运行</h1>
+      <div class="body">
+        <p>你看到这一屏，说明当前打开方式没有执行脚本，游戏内容因此没加载出来。</p>
+        <p>最常见的原因是：在 <strong>微信里直接点开文件</strong>，或用手机「文件」App 的 <strong>预览</strong> 打开——这类预览器会屏蔽脚本和样式。</p>
+        <p>正确的打开方式：</p>
+        <p>① 发到电脑上，双击用 Chrome / Edge 打开；<br>
+           ② 或用手机浏览器（Chrome / Safari / 夸克 / QQ 浏览器）打开；<br>
+           ③ 或让电脑起个本地服务，手机连同一个 WiFi 访问电脑的地址。</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="foot-names">赵哲 · 万家邑 · 张静</div>
+    <div>每个选择都会改变结局 · <button id="aboutBtn">关于本作</button> · <button id="resetBtn">重新开始</button></div>
+  </footer>
 </div>
 
-<noscript><p style="padding:40px;text-align:center">请启用 JavaScript 后重新打开本页面。</p></noscript>
+<div class="modal" id="aboutModal" hidden>
+  <div class="modal-mask" data-close="1"></div>
+  <div class="modal-card">
+    <button class="modal-x" data-close="1" aria-label="关闭">×</button>
+    <h3>关于本作</h3>
+    <p class="about-name">安全屋 · 新员工的第一周</p>
+    <dl>
+      <dt>作品类型</dt><dd>交互式网络安全故事 · 课程数字作品</dd>
+      <dt>课程</dt><dd>网络安全教育（选修）</dd>
+      <dt>小组成员</dt><dd>赵哲 · 万家邑 · 张静</dd>
+      <dt>技术</dt><dd>单文件 HTML + CSS + 原生 JavaScript，无外部依赖，离线可运行</dd>
+      <dt>课程映射</dt><dd>钓鱼攻击与社工、身份冒充、无线网络安全、电信诈骗、口令安全、物理介质安全——六个场景各对应一类。</dd>
+      <dt>AI 使用</dt><dd>剧本框架与页面代码由大模型辅助生成；六个场景的知识点由小组成员查资料核对；插画由 AI 生成后人工调整。</dd>
+    </dl>
+    <p class="about-foot">本作中的公司、人物、订单号均为虚构，仅用于安全科普。</p>
+  </div>
+</div>
+
+<noscript>
+  <div style="position:fixed;inset:0;background:#F4F7FB;padding:40px 24px;font-family:sans-serif;color:#0E1A2B;z-index:99">
+    <h2 style="font-size:20px">这个页面需要 JavaScript</h2>
+    <p style="color:#33425C;line-height:1.8">
+      当前浏览器禁用了脚本，游戏无法加载。<br>
+      请改用 Chrome / Edge / Safari 打开本文件，或在浏览器设置里允许 JavaScript。
+    </p>
+  </div>
+</noscript>
 
 <script>
 (function () {
@@ -207,15 +363,19 @@
 
   var STORY = {
 
+    /* ---------- 开场页 ---------- */
+    landing: { landing: true },
+
     /* ---------- 序章 ---------- */
     intro: {
       ch: 0,
-      place: '周一 09:00 · 星海科技 前台',
+      place: '周一 08:50 · 星海科技 一楼大厅',
       title: '入职第一天',
       body: [
         '你叫林小满，今天是你入职星海科技的第一天。',
-        'HR 在邮件里说：上午先熟悉环境，下午三点到三楼会议室签合同。',
-        '你在工位坐下，电脑还没开机，手机先震了一下。'
+        '办手续的时候，HR 顺口提了一句：「上个月我们出过一次数据泄露，安全部到现在还在查。你以后注意点，别乱点链接。」',
+        '你点点头，没太往心里去——一家公司出点安全事故，跟你一个新人有什么关系。',
+        '九点钟，你坐到工位上。电脑还没开机，手机先震了一下。'
       ],
       choices: [{ t: '打开手机看看', next: 'mail' }]
     },
@@ -224,6 +384,7 @@
     mail: {
       ch: 1,
       place: '周一 09:12 · 公司邮箱',
+      img: 'img/01-mail.png',
       title: '一封「入职材料」邮件',
       body: [
         '发件人：HR-人事部 <hr@xinghai-hr-service.com>',
@@ -277,6 +438,8 @@
     boss: {
       ch: 2,
       place: '周一 14:30 · 微信',
+      img: 'img/02-transfer.png',
+      timer: 20,
       title: '「张总」的转账请求',
       body: [
         '一个头像和昵称都是「张总」的人加了你微信，验证消息写着「小满，加一下」。',
@@ -354,6 +517,7 @@
     wifi: {
       ch: 3,
       place: '周一 19:40 · 楼下咖啡馆',
+      img: 'img/03-wifi.png',
       title: '三个同名 WiFi',
       body: [
         '加班到晚上，你抱着电脑到楼下咖啡馆改方案。手机热点只剩 200MB，而你要登录公司 VPN 拉一份 300MB 的素材。',
@@ -407,6 +571,7 @@
     code: {
       ch: 4,
       place: '周二 20:15 · 出租屋',
+      img: 'img/04-code.png',
       title: '一个「客服」电话',
       body: [
         '手机响了，对方自称是某电商平台客服：',
@@ -428,7 +593,7 @@
         '三分钟后，你的卡被转走 4800 元。再打回去，号码已停机。'
       ],
       tip: '验证码 = 你账户的最后一道锁。任何人在电话里索要验证码，无论理由多合理，都是诈骗。平台客服永远不会问你要验证码。',
-      next: 'pwd'
+      next: 'midpoint'
     },
     r_code_screen: {
       ch: 4, tone: 'bad', res: 'bad', name: '验证码诈骗',
@@ -439,7 +604,7 @@
         '对方还「指导」你装了一个来路不明的 APP——那是个木马，能读取你的全部短信。'
       ],
       tip: '屏幕共享等于把手机交到对方手里。同理，陌生人让你下载「会议软件」「理赔 APP」「安全插件」，一律拒绝。',
-      next: 'pwd'
+      next: 'midpoint'
     },
     r_code_good: {
       ch: 4, tone: 'good', res: 'good', name: '验证码诈骗',
@@ -450,6 +615,31 @@
         '你在 APP 内举报了那个号码。客服回复：这是典型的「理赔诈骗」，他们掌握你的订单信息，往往是因为你在别处填过资料。'
       ],
       tip: '骗子能报出你的订单，不代表他是官方。判断真伪要看「谁在主动联系你、要你做什么」，而不是他知道多少。',
+      next: 'midpoint'
+    },
+
+    /* ---------- 中场转折：把六个事件串成一条链 ---------- */
+    midpoint: {
+      ch: 4,
+      place: '周三 09:30 · 安全部会议室',
+      title: '一封来自安全部的邮件',
+      body: [
+        '早上你收到一封公司内网邮件：「检测到你的账号曾在境外 IP 登录，请于今日 10:00 到三楼安全部说明情况。」',
+        '会议室里，安全部的老周把一张纸推到你面前——上面是你这一周的行踪：',
+        '「周一，钓鱼邮件；周一，冒充领导的转账；周一晚上，咖啡馆的假热点；周二，理赔电话。」',
+        '「四次，都指向你。」他抬头看你，「不是你运气差。有人在你投简历的时候，就已经拿到你的信息了。」'
+      ],
+      choices: [{ t: '「那我现在该怎么办？」', next: 'midpoint2' }]
+    },
+    midpoint2: {
+      ch: 4,
+      place: '周三 09:48 · 安全部会议室',
+      title: '老周给了两条建议',
+      body: [
+        '「两件事。」老周竖起手指。',
+        '「一，把公司账号的密码换掉，别再用你在别处用过的。二，」他顿了顿，「最近留意身边的人。他们还没得手，就不会停。」',
+        '你回到工位，打开密码设置页面。'
+      ],
       next: 'pwd'
     },
 
@@ -457,6 +647,7 @@
     pwd: {
       ch: 5,
       place: '周三 10:00 · 公司内网',
+      img: 'img/05-password.png',
       title: '设置密码',
       body: [
         '公司账号开通了，系统要求你设置新密码。',
@@ -506,6 +697,7 @@
     usb: {
       ch: 6,
       place: '周四 18:20 · 地下停车场',
+      img: 'img/06-usb.png',
       title: '一个 U 盘',
       body: [
         '你在停车场捡到一个 U 盘，外壳上贴着标签：**「2024 年 12 月工资表（勿外传）」**。',
@@ -564,6 +756,16 @@
     { ic: '💾', t: '可疑设备', d: '接口即入口。捡到的 U 盘不要插，交给 IT 用隔离环境检测。' }
   ];
 
+  /* ---------- 每个环节「正确的一步」，结局页按玩家实际选错的内容显示 ---------- */
+  var FIX = [
+    '先比对发件人域名：公司真实域名是 xinghai.com，多出来的「-hr-service」是仿冒的。发现不对就转发给 IT，不要打开附件。',
+    '凡是转账，必须换一个渠道核实：用通讯录里存的号码打回去，而不是在微信里问。截图和到账短信都能伪造。',
+    '连公共 WiFi 前先问店员确认官方名称；必须处理敏感文件时，连上先开 VPN 再登录系统，或者直接用手机热点。',
+    '验证码是账户最后一道锁，任何人索要都是诈骗。挂断电话，自己在官方 APP 里查订单。',
+    '一个账号一个密码，用密码管理器生成随机密码，并开启二次验证——这样即使某个网站泄露，别的账号也不会被撞开。',
+    '捡到的存储设备不要插自己的电脑，交给 IT 或安全部门，由专用隔离环境检测。接口就是入口。'
+  ];
+
   /* ===================== 以下一般不需要改 ===================== */
 
   var stage = document.getElementById('stage');
@@ -572,12 +774,72 @@
   var track = document.getElementById('track');
   var meter = document.querySelector('.meter');
   var S = null;
+  var timerId = null;
+
+  var SAVE_KEY = 'safehouse_save_v1';
+
+  function saveState() {
+    try {
+      localStorage.setItem(SAVE_KEY, JSON.stringify({
+        node: S.node, score: S.score, leaks: S.leaks, log: S.log, ch: S.ch
+      }));
+    } catch (e) { /* 本地文件模式下可能被禁用 */ }
+  }
+
+  function loadSave() {
+    try {
+      var raw = localStorage.getItem(SAVE_KEY);
+      if (!raw) return null;
+      var d = JSON.parse(raw);
+      if (!d || !d.node || !STORY[d.node]) return null;
+      if (d.node === 'landing' || d.node === 'end') return null;   // 玩完了就重新开始
+      if (typeof d.score !== 'number') d.score = START_SCORE;
+      if (!Array.isArray(d.leaks)) d.leaks = [];
+      if (!Array.isArray(d.log)) d.log = [];
+      return d;
+    } catch (e) { return null; }
+  }
+
+  function clearTimer() {
+    if (timerId) { clearInterval(timerId); timerId = null; }
+  }
+
+  function startTimer(total) {
+    clearTimer();
+    var left = total;
+    var bar = document.getElementById('timerBar');
+    var txt = document.getElementById('timerTxt');
+    var box = document.getElementById('timer');
+    if (!bar || !txt || !box) return;
+    bar.style.width = '100%';
+
+    timerId = setInterval(function () {
+      left--;
+      if (left <= 0) {
+        clearTimer();
+        choose(0);           // 被催到没时间想，手先动了
+        return;
+      }
+      bar.style.width = (left / total * 100) + '%';
+      txt.textContent = left + ' 秒';
+      if (left <= 6) box.className = 'timer urgent';
+    }, 1000);
+  }
+
+  /* 兼容旧浏览器的小工具：NodeList 在老 WebView 上没有 forEach */
+  function each(list, fn) {
+    for (var i = 0; i < list.length; i++) fn(list[i], i);
+  }
+  function topOfPage() {
+    try { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    catch (e) { window.scrollTo(0, 0); }
+  }
 
   function reset() {
-    S = { score: START_SCORE, leaks: [], log: [], ch: 0 };
+    S = { score: START_SCORE, leaks: [], log: [], ch: 0, leakSeen: 0, locked: false };
     scoreVal.textContent = S.score;
     paintBar();
-    go('intro');
+    go('landing');
   }
 
   function esc(s) {
@@ -604,12 +866,15 @@
     el.textContent = (delta > 0 ? '+' : '') + delta;
     el.style.color = delta > 0 ? '#0F7A3D' : '#B42318';
     meter.appendChild(el);
-    setTimeout(function () { el.remove(); }, 1000);
+    setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 1000);
   }
 
   function choose(i) {
     var node = STORY[S.node];
     if (!node || !node.choices) return;
+    if (S.locked) return;
+    S.locked = true;
+    clearTimer();
     var c = node.choices[i];
     if (!c) return;
 
@@ -621,7 +886,7 @@
     }
     if (c.leak) S.leaks.push(c.leak);
 
-    document.querySelectorAll('.choice').forEach(function (b) { b.disabled = true; });
+    each(document.querySelectorAll('.choice'), function (b) { b.disabled = true; });
     setTimeout(function () { go(c.next); }, c.score ? 180 : 0);
   }
 
@@ -636,6 +901,13 @@
     }
     var label = S.ch <= 0 ? '准备中' : (S.ch >= 6 ? '本周结束' : '场景 ' + S.ch + ' / 6');
     html += '<span class="txt">' + label + '</span>';
+
+    var nLeak = S.leaks.length;
+    var bump = nLeak > (S.leakSeen || 0);
+    S.leakSeen = nLeak;
+    html += '<span class="leak-chip' + (nLeak ? ' on' : '') + (bump ? ' bump' : '') + '">' +
+            '已泄露 ' + nLeak + ' 项</span>';
+
     track.innerHTML = html;
   }
 
@@ -643,17 +915,67 @@
     var n = STORY[id];
     if (!n) { console.error('找不到节点：' + id); return; }
     S.node = id;
+    S.locked = false;
+    clearTimer();
     if (n.ch > S.ch) S.ch = n.ch;
     if (n.res) S.log[n.ch - 1] = { res: n.res, name: n.name };
     renderTrack();
+    saveState();
+    if (n.landing) { renderLanding(); return; }
     if (n.ending) { renderEnding(); return; }
     renderScene(n);
   }
 
   var TONE_TEXT = { good: '✓ 处理正确', bad: '✕ 中招了', warn: '! 差一点' };
 
+  /* ---------- 图片插槽 ----------
+     约定：把图放到 img/ 目录，文件名对上就会自动出现；
+     找不到图（还没画）就自动隐藏，不会出现破图。
+     同时支持 .png 和 .jpg，不用改文件名。 */
+  function fig(src) {
+    return '<div class="fig"><img src="' + src + '" alt=""></div>';
+  }
+
+  function bindFigs() {
+    each(stage.querySelectorAll('.fig img'), function (im) {
+      im.onerror = function () {
+        var s = im.getAttribute('src') || '';
+        if (/\.png$/i.test(s)) {
+          im.setAttribute('src', s.replace(/\.png$/i, '.jpg'));
+        } else {
+          im.parentNode.style.display = 'none';
+        }
+      };
+    });
+  }
+
+  /* ---------- 开场页 ---------- */
+  function renderLanding() {
+    var html = '<section class="card landing">';
+    html += fig('img/00-hero.png');
+    html += '<div class="kicker">网络安全教育 · 选修课 · 数字作品</div>';
+    html += '<h1 class="hero-title">安全屋</h1>';
+    html += '<div class="hero-sub">新员工的第一周</div>';
+    html += '<p class="lead">你叫林小满，今天第一天入职星海科技。' +
+            'HR 提醒你「上个月公司出过一次数据泄露，别乱点链接」，你没太当回事。<br>' +
+            '直到你坐到工位上，手机震了一下。</p>';
+    html += '<div class="how">' +
+              '<div class="how-item"><b>6 个场景</b><span>邮件 · 转账 · WiFi · 验证码 · 密码 · U 盘</span></div>' +
+              '<div class="how-item"><b>约 10 分钟</b><span>每个选择都会改变结局</span></div>' +
+              '<div class="how-item"><b>满分 100</b><span>做错才扣分，看你还剩多少</span></div>' +
+            '</div>';
+    html += '<button class="start" id="startBtn">开始这一周 <span>→</span></button>';
+    html += '<p class="hint">键盘 1 / 2 / 3 可以直接选，回车继续</p>';
+    html += '</section>';
+
+    stage.innerHTML = html;
+    bindFigs();
+    document.getElementById('startBtn').addEventListener('click', function () { go('intro'); });
+  }
+
   function renderScene(n) {
     var html = '<section class="card ' + (n.tone || '') + '">';
+    if (n.img) html += fig(n.img);
     html += '<div class="meta"><span class="place">' + esc(n.place) + '</span>';
     if (n.res) html += '<span class="pill ' + n.res + '">' + TONE_TEXT[n.res] + '</span>';
     html += '</div>';
@@ -666,6 +988,14 @@
 
     if (n.tip) {
       html += '<div class="tip"><b>知识点</b>' + fmt(n.tip) + '</div>';
+    }
+
+    if (n.timer) {
+      html += '<div class="timer" id="timer">' +
+                '<div class="timer-head"><span>对方正在催你</span>' +
+                '<b id="timerTxt">' + n.timer + ' 秒</b></div>' +
+                '<div class="timer-bar"><i id="timerBar"></i></div>' +
+              '</div>';
     }
 
     html += '<div class="choices">';
@@ -682,8 +1012,11 @@
     html += '</div></section>';
 
     stage.innerHTML = html;
+    bindFigs();
 
-    stage.querySelectorAll('.choice[data-i]').forEach(function (btn) {
+    if (n.timer) startTimer(n.timer);
+
+    each(stage.querySelectorAll('.choice[data-i]'), function (btn) {
       btn.addEventListener('click', function () { choose(Number(btn.dataset.i)); });
     });
     var nb = document.getElementById('nextBtn');
@@ -700,26 +1033,55 @@
   function renderEnding() {
     S.ch = 6;
     renderTrack();
+
     var g = gradeOf(S.score);
     var total = S.log.filter(function (x) { return x && x.res === 'good'; }).length;
+    var STEP_NAMES = ['钓鱼邮件', '冒充领导', '公共 WiFi', '验证码诈骗', '密码管理', '可疑 U 盘'];
+    var STEP_TXT = { good: '识破', warn: '险过', bad: '中招' };
 
     var html = '<section class="card end">';
     html += '<div class="grade"><div class="badge" style="--c:' + g.c + '">' + g.k + '</div>' +
-            '<h2>' + g.name + '<small>' + (S.ch >= 6 ? '六关全部完成' : '') + '</small></h2></div>';
+            '<h2>' + g.name + '<small>六关全部完成</small></h2></div>';
     html += '<p class="final">最终安全分<b>' + S.score + '</b>/ 100</p>';
     html += '<p class="verdict">' + g.line + '　你在 ' + total + ' / 6 个场景里做出了正确判断。</p>';
 
-    html += '<h3>本周复盘</h3><ul class="review">';
+    /* ---------- 攻击链 ---------- */
+    html += '<h3>这不是六件倒霉事</h3>' +
+            '<p class="chain-lead">从你投简历那天起，这条攻击链就已经开始运转了：</p>' +
+            '<div class="chain">';
     for (var i = 0; i < 6; i++) {
-      var r = S.log[i];
-      var ic = !r ? '–' : r.res === 'good' ? '✓' : r.res === 'warn' ? '!' : '✕';
-      var cl = !r ? '' : r.res === 'good' ? 'g' : r.res === 'warn' ? 'w' : 'b';
-      var nm = ['钓鱼邮件', '冒充领导', '公共 WiFi', '验证码诈骗', '密码管理', '可疑 U 盘'][i];
-      var tx = !r ? '未经历' : r.res === 'good' ? '识破' : r.res === 'warn' ? '险过' : '中招';
-      html += '<li><i class="' + cl + '">' + ic + '</i>' + nm + '　<span style="color:#7A889E">' + tx + '</span></li>';
+      var rr = S.log[i];
+      var rs = rr ? rr.res : 'none';
+      html += '<div class="node ' + rs + '">' +
+                '<span class="n">0' + (i + 1) + '</span>' +
+                '<b>' + STEP_NAMES[i] + '</b>' +
+                '<i>' + (rr ? STEP_TXT[rs] : '未经历') + '</i>' +
+              '</div><span class="link"></span>';
     }
-    html += '</ul>';
+    html += '<div class="node end ' + (S.leaks.length ? 'bad' : 'good') + '">' +
+              '<span class="n">★</span>' +
+              '<b>你的数据</b>' +
+              '<i>' + (S.leaks.length ? '被拿走 ' + S.leaks.length + ' 项' : '完好无损') + '</i>' +
+            '</div></div>';
 
+    /* ---------- 你本来该怎么做 ---------- */
+    var wrongs = [];
+    for (var j = 0; j < 6; j++) {
+      var rj = S.log[j];
+      if (rj && rj.res !== 'good') wrongs.push(j);
+    }
+    html += '<h3>你本来该怎么做</h3>';
+    if (wrongs.length) {
+      html += '<div class="fixlist">';
+      wrongs.forEach(function (k) {
+        html += '<div class="fix"><b>0' + (k + 1) + '　' + STEP_NAMES[k] + '</b><p>' + FIX[k] + '</p></div>';
+      });
+      html += '</div>';
+    } else {
+      html += '<p class="chain-lead">六个环节全部识破，没有需要补的。</p>';
+    }
+
+    /* ---------- 泄露清单 ---------- */
     html += '<h3>泄露清单</h3>';
     if (S.leaks.length === 0) {
       html += '<p style="font-size:13.5px;color:#0F7A3D;margin:0">什么也没丢。这就是最好的结果。</p>';
@@ -729,39 +1091,65 @@
       html += '</ul>';
     }
 
-    html += '<h3>六个必须记住的知识点</h3><div class="cards">';
+    /* ---------- 尾声 ---------- */
+    var epi;
+    if (S.score >= 90) {
+      epi = '你的名字在「处置得当人员」名单的第一行。三个月后你顺利转正，老周在转正表上签了字。';
+    } else if (S.score >= 75) {
+      epi = '名单上有你的名字。转正答辩那天，老周来旁听，散会时冲你点了下头。';
+    } else if (S.score >= 55) {
+      epi = '名单上没有你，但报告里多了一句「事后处置及时」。你还是转正了，只是过程比想象中惊险。';
+    } else {
+      epi = '报告里没有出现你的名字，只有一行编号。老周说这次不全怪你——但那份报告，你得读三遍。';
+    }
+    html += '<h3>尾声</h3><div class="epilogue">';
+    html += '<p>一个月后，安全部发了一封全员邮件，附件是一份复盘报告。第一页写着：</p>';
+    html += '<p class="quote">「本次针对新员工的定向攻击共涉及 6 个环节，成功阻断 ' + total + ' 个。」</p>';
+    html += '<p>' + epi + '</p>';
+    html += '<p class="closing">后来你带新人的时候，第一句话总是：<br>' +
+            '「公司邮箱里那封让你解压附件的邮件，不是 HR 发的。」</p>';
+    html += '</div>';
+
+    /* ---------- 知识点（默认折叠） ---------- */
+    html += '<details class="know"><summary>六个必须记住的知识点<span></span></summary><div class="cards">';
     CARDS.forEach(function (c) {
       html += '<div class="kcard"><span class="ic">' + c.ic + '</span><div><b>' + c.t + '</b><span>' + c.d + '</span></div></div>';
     });
-    html += '</div>';
+    html += '</div></details>';
 
     html += '<div class="chant">链接不轻点 · 转账先核实 · 验证码不给 · 密码不重复 · U 盘不乱插 · WiFi 不轻连</div>';
     html += '<div class="acts"><button class="btn-main" id="again">再玩一次</button>' +
             '<button class="btn-ghost" id="shareBtn">复制我的成绩</button></div>';
+    html += '<p class="replay-tip">试试六个场景全部选对，看看尾声会变成什么样。</p>';
     html += '</section>';
 
     stage.innerHTML = html;
 
     document.getElementById('again').addEventListener('click', function () {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      topOfPage();
       reset();
     });
     document.getElementById('shareBtn').addEventListener('click', function () {
       var txt = '我在《安全屋 · 新员工的第一周》拿到 ' + g.k + ' 级（' + S.score + ' 分），' +
                 '踩了 ' + S.leaks.length + ' 个坑。你能拿几分？';
-      navigator.clipboard && navigator.clipboard.writeText(txt).then(function () {
-        document.getElementById('shareBtn').textContent = '已复制 ✓';
-      }).catch(function () {
-        document.getElementById('shareBtn').textContent = txt;
-      });
+      var btn = document.getElementById('shareBtn');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(function () {
+          btn.textContent = '已复制 ✓';
+        }).catch(function () {
+          btn.textContent = '复制失败，长按手动选';
+        });
+      } else {
+        btn.textContent = '复制失败，长按手动选';
+      }
     });
 
     try {
       var best = Number(localStorage.getItem('safehouse_best') || 0);
       if (S.score > best) localStorage.setItem('safehouse_best', String(S.score));
-    } catch (e) { /* 本地文件模式下可能不可用，忽略 */ }
+    } catch (e) { /* 本地文件模式下可能不可用 */ }
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    topOfPage();
   }
 
   /* 键盘：1-4 选择，回车继续 */
@@ -773,12 +1161,36 @@
     if (e.key === 'Enter') {
       var nb = document.getElementById('nextBtn');
       if (nb) nb.click();
+      var sb = document.getElementById('startBtn');
+      if (sb) sb.click();
     }
   });
 
   document.getElementById('resetBtn').addEventListener('click', reset);
 
-  reset();
+  var aboutModal = document.getElementById('aboutModal');
+  document.getElementById('aboutBtn').addEventListener('click', function () {
+    aboutModal.hidden = false;
+  });
+  aboutModal.addEventListener('click', function (e) {
+    if (e.target.getAttribute('data-close')) aboutModal.hidden = true;
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') aboutModal.hidden = true;
+  });
+
+  var saved = loadSave();
+  if (saved) {
+    S = {
+      score: saved.score, leaks: saved.leaks, log: saved.log, ch: saved.ch || 0,
+      leakSeen: saved.leaks.length, locked: false
+    };
+    scoreVal.textContent = S.score;
+    paintBar();
+    go(saved.node);
+  } else {
+    reset();
+  }
 })();
 </script>
 </body>
